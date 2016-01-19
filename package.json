@@ -1,0 +1,10 @@
+{
+  "name": "react-conf-experience",
+  "version": "0.0.0",
+  "description": "Hello Exponent!",
+  "main": "main.js",
+  "author": "ide@jameside.com",
+  "dependencies": {
+    "react-native": "github:exponentjs/react-native#2016-01-02"
+  }
+}

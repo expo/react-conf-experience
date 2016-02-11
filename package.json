@@ -1,10 +1,19 @@
 {
   "name": "react-conf-experience",
   "version": "0.0.0",
-  "description": "Hello Exponent!",
-  "main": "main.js",
-  "author": "ide@jameside.com",
+  "license": "MIT",
+  "description": "React Conf 2016 Official App",
+  "private": true,
+  "main": "ReactConfApp.js",
+  "author": "Adam Miskiewicz <adam@sk3vy.com>",
+  "exp": {
+    "abiVersion": "UNVERSIONED"
+  },
   "dependencies": {
-    "react-native": "github:exponentjs/react-native#2016-01-02"
+    "babel-preset-react-native": "^1.4.0",
+    "babel-relay-plugin": "^0.6.3",
+    "react": "^0.14.7",
+    "react-native": "github:exponentjs/react-native#2016-02-09",
+    "react-relay": "github:exponentjs/relay#exp-latest"
   }
 }

@@ -3,7 +3,7 @@ The official mobile app for React Conf 2016.
 
 ## Project
 
-Mockups from Thinkmill here: https://www.dropbox.com/sh/ofy0nlniflvm1z5/AACCzKfv7NJbcltOMGs7hezJa. There are quite a few complex features to implement so this is the Trello board that lists priorities and who's working on what: https://trello.com/b/1aQe7XX3/react-conf-experience.
+Mockups from Thinkmill here: https://www.dropbox.com/sh/7spugbj4usjkmsy/AAC-iKIG2B0n8wGJSd57ngqUa?dl=0. There are quite a few complex features to implement so this is the Trello board that lists priorities and who's working on what: https://trello.com/b/1aQe7XX3/react-conf-experience.
 
 Items noted as **Necessary** are needed for the conference app to be usable. Items under **Features** are nice to have. If you'd like to help and can commit to building a feature, add yourself as a member to its card and move the card under **In Progress** so we know who's working on what. When you're done with the feature, move the card to **Done**.
 

@@ -7,13 +7,22 @@
   "main": "ReactConfApp.js",
   "author": "Adam Miskiewicz <adam@sk3vy.com>",
   "exp": {
-    "abiVersion": "UNVERSIONED"
+    "abiVersion": "UNVERSIONED",
+    "name": "React Conf 2016",
+    "orientation": "portrait",
+    "primaryColor": "#f6f6f7"
   },
   "dependencies": {
+    "@exponent/react-native-responsive-image": "0.0.4",
+    "@exponent/with-custom-font": "^2.0.0",
     "babel-preset-react-native": "^1.4.0",
     "babel-relay-plugin": "^0.6.3",
+    "immutable": "^3.7.6",
     "react": "^0.14.7",
+    "react-mixin": "^3.0.3",
     "react-native": "github:exponentjs/react-native#2016-02-09",
-    "react-relay": "github:exponentjs/relay#exp-latest"
+    "react-native-clone-referenced-element": "^1.0.0",
+    "react-relay": "github:exponentjs/relay#exp-latest",
+    "react-timer-mixin": "^0.13.3"
   }
 }

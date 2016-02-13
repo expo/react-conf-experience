@@ -4,23 +4,54 @@
 
 import React, {
   AppRegistry,
+  NavigationExperimental,
   StyleSheet,
+  Text,
   View,
 } from 'react-native';
 
+const {
+  Container: NavigationContainer,
+  RootContainer: NavigationRootContainer,
+} = NavigationExperimental;
+
 import Colors from 'Colors';
+import ExNavigationReducer from 'ExNavigationReducer';
 import ExText from 'ExText';
 import Layout from 'Layout';
 import Schedule from 'Schedule';
+import ExTabNavigator from 'ExTabNavigator';
 
 class App extends React.Component {
+
   render() {
     return (
-      <View style={{flex: 1}}>
-        {this._renderHeader()}
-        <Schedule />
-      </View>
+      <NavigationRootContainer
+        reducer={ExNavigationReducer}
+        renderNavigation={this._renderApp.bind(this)}
+      />
     );
+  }
+
+  _renderApp(navigationState) {
+    return (
+      <ExTabNavigator
+        renderScene={this._renderTabScene}
+        navigationState={navigationState}
+      />
+    );
+  }
+
+  _renderTabScene(tabState, index) {
+    if (index === 0) {
+      return <Schedule />;
+    } else {
+      return (
+        <View>
+          <Text>{index}</Text>
+        </View>
+      );
+    }
   }
 
   _renderHeader() {

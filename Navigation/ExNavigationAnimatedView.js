@@ -10,6 +10,8 @@ var NavigationContainer = require('NavigationContainer');
 var React = require('react-native');
 var View = require('View');
 
+const USE_NATIVE_ANIMATIONS = false;
+
 import type {
   NavigationState,
   NavigationParentState,
@@ -92,7 +94,7 @@ class NavigationAnimatedView extends React.Component {
     this._animatedHeight = new Animated.Value(0);
     this._animatedWidth = new Animated.Value(0);
     this.state = {
-      position: new Animated.Value(this.props.navigationState.index, true),
+      position: new Animated.Value(this.props.navigationState.index, USE_NATIVE_ANIMATIONS),
       scenes: new Map(),
     };
   }
@@ -113,12 +115,20 @@ class NavigationAnimatedView extends React.Component {
   }
   componentDidUpdate(lastProps) {
     if (lastProps.navigationState.index !== this.props.navigationState.index) {
+      let vx = 0;
+      if (this._nextTransitionVelocity) {
+        vx = this._nextTransitionVelocity.vx;
+        this._nextTransitionVelocity = null;
+      }
+
       Animated.spring(
         this.state.position,
         {
           toValue: this.props.navigationState.index,
           bounciness: 0,
           speed: 15,
+          velocity: -vx,
+          overshootClamping: true,
         }
       ).start();
     }
@@ -129,7 +139,27 @@ class NavigationAnimatedView extends React.Component {
       this.postionListener = null;
     }
   }
+
+  onNavigate(action) {
+    if (action.velocity) {
+      this._gesturePopInProgress = action.velocity;
+    }
+
+    this.props.onNavigate(action);
+  }
+
+  getNavigationHandler() {
+    return this.onNavigate.bind(this);
+  }
+
+  getChildContext() {
+    return {
+      onNavigate: this.getNavigationHandler(),
+    };
+  }
+
   _onProgressChange(data: Object): void {
+    console.log(data);
     if (Math.abs(data.value - this.props.navigationState.index) > Number.EPSILON) {
       return;
     }
@@ -215,6 +245,14 @@ class NavigationAnimatedView extends React.Component {
     return null;
   }
 }
+
+NavigationAnimatedView.contextTypes = {
+  onNavigate: React.PropTypes.func,
+};
+
+NavigationAnimatedView.childContextTypes = {
+  onNavigate: React.PropTypes.func,
+};
 
 NavigationAnimatedView = NavigationContainer.create(NavigationAnimatedView);
 

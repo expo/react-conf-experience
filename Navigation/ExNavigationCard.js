@@ -75,7 +75,10 @@ class NavigationCard extends React.Component {
         const doesPop = (xRatio + vx) > 0.45;
         if (doesPop) {
           // todo: add an action which accepts velocity of the pop action/gesture, which is caught and used by NavigationAnimatedView
-          this.props.onNavigate(NavigationReducer.StackReducer.PopAction());
+          this.props.onNavigate(NavigationReducer.StackReducer.GesturePopAction({
+            vx: vx,
+            vy: 0,
+          }));
           return;
         }
         Animated.spring(this.props.position, {

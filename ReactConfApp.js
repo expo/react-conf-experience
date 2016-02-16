@@ -128,3 +128,4 @@ const styles = StyleSheet.create({
 });
 
 AppRegistry.registerComponent('main', () => App);
+console.disableYellowBox = true;

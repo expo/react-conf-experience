@@ -51,21 +51,20 @@ class ExNavigationHeader extends React.Component {
     }
 
     return (
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={this._handleBackPress}>
-        <AnimatedExIcon
-          imageName="carat"
-          style={[
-            styles.backButtonImage,
-            {
-              opacity: this.props.position.interpolate({
-                inputRange: [index - 1, index, index + 1],
-                outputRange: [0, 1, 0],
-              }),
-            },
-          ]} />
-      </TouchableOpacity>
+      <Animated.View
+        style={[
+          styles.backButtonWrapper,
+          {
+            opacity: this.props.position.interpolate({
+              inputRange: [index - 1, index, index + 1],
+              outputRange: [0, 1, 0],
+            }),
+          },
+        ]}>
+        <TouchableOpacity onPress={this._handleBackPress}>
+          <ExIcon imageName="carat" style={styles.backButtonImage} />
+        </TouchableOpacity>
+      </Animated.View>
     );
   }
 
@@ -118,15 +117,16 @@ const styles = StyleSheet.create({
     borderBottomColor: '#D2D2D2',
     position: 'absolute',
   },
-  backButton: {
+  backButtonWrapper: {
     width: 29,
     height: 37,
-    position: 'absolute',
     bottom: 10,
     left: 2,
     padding: 8,
+    position: 'absolute',
   },
   backButtonImage: {
+    tintColor: '#000',
     width: 13,
     height: 21,
     transform: [{rotate: '180deg'}],

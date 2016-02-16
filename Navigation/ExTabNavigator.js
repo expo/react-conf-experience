@@ -62,7 +62,7 @@ class ExTabNavigator extends React.Component {
               navigationState={tabState}
               position={position}
               layout={layout}
-              getTitle={state => tabState.children[tabState.index].title}
+              getTitle={state => state.title}
             />
           );
         }}

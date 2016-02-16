@@ -23,6 +23,7 @@ import ExText from 'ExText';
 import WithFreightSansFont from 'WithFreightSansFont';
 
 const AnimatedExText = Animated.createAnimatedComponent(ExText);
+const AnimatedExIcon = Animated.createAnimatedComponent(ExIcon);
 
 class ExNavigationHeader extends React.Component {
 
@@ -39,20 +40,31 @@ class ExNavigationHeader extends React.Component {
           this.props.headerStyle,
         ]}>
         {state.children.map(this._renderTitle, this)}
-        {this._renderBackButton()}
+        {state.children.map(this._renderBackButton, this)}
       </Animated.View>
     );
   }
 
-  _renderBackButton() {
-    if (this.props.navigationState.index === 0) {
+  _renderBackButton(childState, index) {
+    if (index === 0) {
       return null;
     }
+
     return (
-      <TouchableOpacity style={styles.backButton} onPress={this._handleBackPress}>
-        <ExIcon
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={this._handleBackPress}>
+        <AnimatedExIcon
           imageName="carat"
-          style={styles.backButtonImage} />
+          style={[
+            styles.backButtonImage,
+            {
+              opacity: this.props.position.interpolate({
+                inputRange: [index - 1, index, index + 1],
+                outputRange: [0, 1, 0],
+              }),
+            },
+          ]} />
       </TouchableOpacity>
     );
   }
@@ -67,7 +79,7 @@ class ExNavigationHeader extends React.Component {
           {
             opacity: this.props.position.interpolate({
               inputRange: [index - 1, index, index + 1],
-              outputRange: [0.0, 1.0, 0.0],
+              outputRange: [0, 1, 0],
             }),
           },
         ]}>
@@ -90,6 +102,7 @@ const styles = StyleSheet.create({
     fontSize: 21,
     color: '#0A0A0A',
     position: 'absolute',
+    backgroundColor: 'transparent',
     top: 12,
     left: 0,
     right: 0,

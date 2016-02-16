@@ -10,7 +10,7 @@ var NavigationContainer = require('NavigationContainer');
 var React = require('react-native');
 var View = require('View');
 
-const USE_NATIVE_ANIMATIONS = false;
+const USE_NATIVE_ANIMATIONS = true;
 
 import type {
   NavigationState,
@@ -115,24 +115,23 @@ class NavigationAnimatedView extends React.Component {
   }
   componentDidUpdate(lastProps) {
     if (lastProps.navigationState.index !== this.props.navigationState.index) {
-      let vx = 0;
-      if (this._nextTransitionVelocity) {
-        vx = this._nextTransitionVelocity.vx;
-        this._nextTransitionVelocity = null;
+      if (this._skipNextStateAnimation) {
+        this._skipNextStateAnimation = false;
+      } else {
+        this._animateToIndex(this.props.navigationState.index);
       }
-
-      Animated.spring(
-        this.state.position,
-        {
-          toValue: this.props.navigationState.index,
-          bounciness: 0,
-          speed: 15,
-          velocity: -vx,
-          overshootClamping: true,
-        }
-      ).start();
     }
   }
+
+  _animateToIndex(index, vx = 0) {
+    Animated.spring(this.state.position, {
+      toValue: index,
+      bounciness: 0,
+      velocity: -vx,
+      overshootClamping: true,
+    }).start();
+  }
+
   componentWillUnmount() {
     if (this.postionListener) {
       this.state.position.removeListener(this.postionListener);
@@ -142,7 +141,8 @@ class NavigationAnimatedView extends React.Component {
 
   onNavigate(action) {
     if (action.velocity) {
-      this._gesturePopInProgress = action.velocity;
+      this._animateToIndex(this.props.navigationState.index - 1, action.velocity.vx);
+      this._skipNextStateAnimation = true;
     }
 
     this.props.onNavigate(action);

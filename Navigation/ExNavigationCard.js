@@ -17,6 +17,7 @@ const Dimensions = require('Dimensions');
 const WINDOW_WIDTH = Dimensions.get('window').width;
 
 const ENABLE_GESTURES = true;
+const ExNavigationStackReducer = require('ExNavigationStackReducer');
 
 import type {
   NavigationParentState
@@ -75,7 +76,7 @@ class NavigationCard extends React.Component {
         const doesPop = (xRatio + vx) > 0.45;
         if (doesPop) {
           // todo: add an action which accepts velocity of the pop action/gesture, which is caught and used by NavigationAnimatedView
-          this.props.onNavigate(NavigationReducer.StackReducer.GesturePopAction({
+          this.props.onNavigate(ExNavigationStackReducer.GesturePopAction({
             vx: vx,
             vy: 0,
           }));

@@ -4,10 +4,11 @@
 
 import { NavigationExperimental } from 'react-native';
 const { Reducer: NavigationReducer } = NavigationExperimental;
+const ExNavigationStackReducer = require('ExNavigationStackReducer');
 
 function makeSimpleStackReducer(tabName) {
   return (
-    NavigationReducer.StackReducer({
+    ExNavigationStackReducer({
       initialStates: [
         {type: `${tabName}Page`, key: 'base', title: tabName},
       ],

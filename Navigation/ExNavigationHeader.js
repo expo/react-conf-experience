@@ -79,8 +79,16 @@ class ExNavigationHeader extends React.Component {
           this.props.titleStyle,
           {
             opacity: this.props.position.interpolate({
-              inputRange: [index - 1, index, index + 1],
-              outputRange: [0, 1, 0],
+              inputRange: [index - 1, index - 0.5, index, index + 0.5, index + 1],
+              outputRange: [0, 0.2, 1, 0.3, 0],
+            }),
+            left: this.props.position.interpolate({
+              inputRange: [index - 1, index + 1],
+              outputRange: [200, -200],
+            }),
+            right: this.props.position.interpolate({
+              inputRange: [index - 1, index + 1],
+              outputRange: [-200, 200],
             }),
           },
         ]}>

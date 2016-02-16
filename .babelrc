@@ -1,7 +1,7 @@
 {
   "passPerPreset": true,
   "presets": [
-    { "plugins": "../Schema/babelRelayPlugin.js" },
+    { "plugins": "../_resources/babelRelayPlugin.js" },
     "react-native",
   ],
   "plugins": [

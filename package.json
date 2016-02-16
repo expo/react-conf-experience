@@ -12,6 +12,12 @@
     "orientation": "portrait",
     "primaryColor": "#f6f6f7"
   },
+  "config": {
+    "graphqlEndpoint": "http://14a5e704.ngrok.com"
+  },
+  "scripts": {
+    "fetch-graphql": "curl $npm_package_config_graphqlEndpoint/schema.json > _resources/schema.json"
+  },
   "dependencies": {
     "@exponent/react-native-responsive-image": "^0.1.0",
     "@exponent/with-custom-font": "^2.0.0",

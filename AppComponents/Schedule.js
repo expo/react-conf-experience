@@ -141,7 +141,7 @@ class Schedule extends React.Component {
 
   _renderRow(slot) {
     return (
-      <SlotPreview slot={slot} onNavigate={this.props.onNavigate} />
+      <SlotPreview slot={slot} onNavigate={this.getNavigationHandler()} />
     );
   }
 
@@ -162,7 +162,25 @@ class Schedule extends React.Component {
       </View>
     );
   }
+
+  getNavigationHandler() {
+    return this.props.onNavigate || this.context.onNavigate;
+  }
+
+  getChildContext() {
+    return {
+      onNavigate: this.getNavigationHandler(),
+    };
+  }
 }
+
+Schedule.contextTypes = {
+  onNavigate: React.PropTypes.func,
+};
+
+Schedule.childContextTypes = {
+  onNavigate: React.PropTypes.func,
+};
 
 export default AsRelayRenderer(Schedule);
 

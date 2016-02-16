@@ -12,6 +12,10 @@ const React = require('React');
 const StyleSheet = require('StyleSheet');
 const View = require('View');
 
+// note(brentvatne): yuck
+const Dimensions = require('Dimensions');
+const WINDOW_WIDTH = Dimensions.get('window').width;
+
 const ENABLE_GESTURES = true;
 
 import type {
@@ -102,7 +106,14 @@ class NavigationCard extends React.Component {
   }
   render() {
     const cardPosition = Animated.add(this.props.position, new Animated.Value(-this.props.index));
-    const gestureValue = Animated.multiply(cardPosition, this.props.layout.width);
+
+    let { index } = this.props;
+    const gestureValue = this.props.position.interpolate({
+      inputRange: [index - 1, index, index + 1],
+      outputRange: [-WINDOW_WIDTH, 0, WINDOW_WIDTH / 2.5],
+      extrapolate: 'clamp',
+    });
+
     const touchResponderHandlers = this._responder ? this._responder.panHandlers : null;
     return (
       <Animated.View

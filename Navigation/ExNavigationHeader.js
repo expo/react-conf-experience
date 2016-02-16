@@ -61,7 +61,9 @@ class ExNavigationHeader extends React.Component {
             }),
           },
         ]}>
-        <TouchableOpacity onPress={this._handleBackPress}>
+        <TouchableOpacity
+          hitSlop={{ top: 4, bottom: 5, left: 10, right: 10 }}
+          onPress={this._handleBackPress}>
           <ExIcon imageName="carat" style={styles.backButtonImage} />
         </TouchableOpacity>
       </Animated.View>

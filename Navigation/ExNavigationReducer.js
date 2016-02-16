@@ -11,7 +11,7 @@ function makeSimpleStackReducer(tabName) {
       initialStates: [
         {type: `${tabName}Page`, key: 'base'},
       ],
-      key: tabName.toLowerCase(),
+      key: tabName,
       matchAction: () => false,
     })
   );
@@ -21,7 +21,7 @@ export default NavigationReducer.TabsReducer({
   tabReducers: [
     makeSimpleStackReducer('Schedule'),
     makeSimpleStackReducer('People'),
-    makeSimpleStackReducer('EventInfo'),
+    makeSimpleStackReducer('Event Info'),
     makeSimpleStackReducer('Me'),
   ],
 });

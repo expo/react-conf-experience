@@ -17,10 +17,41 @@ const {
 
 import Colors from 'Colors';
 import ExNavigationReducer from 'ExNavigationReducer';
+import ExIcon from 'ExIcon';
 import ExText from 'ExText';
 import Layout from 'Layout';
 import Schedule from 'Schedule';
 import ExTabNavigator from 'ExTabNavigator';
+
+class TabIcon extends React.Component {
+  render() {
+    let imageName, style;
+    let { tab, selected } = this.props;
+
+    if (tab === 'Schedule') {
+      imageName = 'ScheduleIcon';
+      style = { width: 25, height: 28 }
+    } else if (tab === 'People') {
+      imageName = 'PeopleIcon';
+      style = { width: 45, height: 24 }
+    } else if (tab === 'Event Info') {
+      imageName = 'EventInfoIcon';
+      style = { width: 20, height: 28 }
+    } else {
+      imageName = 'MeIcon';
+      style = { width: 35, height: 25 }
+    }
+
+    style.tintColor = selected ? Colors.tint : '#fff';
+
+    return (
+      <ExIcon
+        imageName={imageName}
+        style={style}
+      />
+    );
+  }
+}
 
 class App extends React.Component {
 
@@ -34,21 +65,39 @@ class App extends React.Component {
   }
 
   _renderApp(navigationState) {
+    if (!navigationState) {
+      return null;
+    }
+
     return (
       <ExTabNavigator
+        tabBarStyle={styles.tabBar}
         renderScene={this._renderTabScene}
-        navigationState={navigationState}
+        renderTabItem={this._renderTabItem}
+        navigationState={navigationState}>
+      </ExTabNavigator>
+    );
+  }
+
+  _renderTabItem(key, isSelected) {
+    return (
+      <ExTabNavigator.Item
+        title={key}
+        renderIcon={() => <TabIcon tab={key} />}
+        renderSelectedIcon={() => <TabIcon tab={key} selected />}
+        selectedTitleStyle={{color: Colors.tint}}
+        selected={isSelected}
       />
     );
   }
 
   _renderTabScene(tabState, index) {
-    if (index === 0) {
+    if (tabState.type === 'SchedulePage') {
       return <Schedule />;
     } else {
       return (
-        <View>
-          <Text>{index}</Text>
+        <View style={{flex: 1}}>
+          <Text>{tabState.type}</Text>
         </View>
       );
     }
@@ -74,7 +123,10 @@ const styles = StyleSheet.create({
     paddingTop: 28,
     borderBottomWidth: Layout.pixel,
     borderBottomColor: Colors.separator,
-  }
+  },
+  tabBar: {
+    backgroundColor: '#1B1D24',
+  },
 });
 
 AppRegistry.registerComponent('main', () => App);

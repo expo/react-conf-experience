@@ -82,14 +82,13 @@ export default class Schedule extends React.Component {
       cloneWithRowsAndSections(eventsByDay, Object.keys(eventsByDay));
 
     return (
-      <ScrollView>
-        <ListView
-          dataSource={dataSource}
-          renderRow={this._renderRow.bind(this)}
-          renderSeparator={this._renderSeparator.bind(this)}
-          renderSectionHeader={this._renderSectionHeader}
-        />
-      </ScrollView>
+      <ListView
+        style={{marginTop: 64}}
+        dataSource={dataSource}
+        renderRow={this._renderRow.bind(this)}
+        renderSeparator={this._renderSeparator.bind(this)}
+        renderSectionHeader={this._renderSectionHeader}
+      />
     );
   }
 

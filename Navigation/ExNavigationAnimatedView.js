@@ -115,21 +115,19 @@ class NavigationAnimatedView extends React.Component {
   }
   componentDidUpdate(lastProps) {
     if (lastProps.navigationState.index !== this.props.navigationState.index) {
-      if (this._skipNextStateAnimation) {
-        this._skipNextStateAnimation = false;
-      } else {
-        this._animateToIndex(this.props.navigationState.index);
+      if (!this._isTransitioning) {
+        Animated.spring(this.state.position, {
+          toValue: this.props.navigationState.index,
+          bounciness: 0,
+          speed: 15,
+          overshootClamping: true,
+        }).start(({finished}) => {
+          if (finished) {
+            this._isTransitioning = false;
+          }
+        });
       }
     }
-  }
-
-  _animateToIndex(index, vx = 0) {
-    Animated.spring(this.state.position, {
-      toValue: index,
-      bounciness: 0,
-      velocity: -vx,
-      overshootClamping: true,
-    }).start();
   }
 
   componentWillUnmount() {
@@ -141,11 +139,22 @@ class NavigationAnimatedView extends React.Component {
 
   onNavigate(action) {
     if (action.velocity) {
-      this._animateToIndex(this.props.navigationState.index - 1, action.velocity.vx);
-      this._skipNextStateAnimation = true;
+      this._isTransitioning = true;
+
+      Animated.spring(this.state.position, {
+        toValue: this.props.navigationState.index - 1,
+        bounciness: 0,
+        speed: 15,
+        velocity: -action.velocity.cx,
+        overshootClamping: true,
+      }).start(() => {
+        this._isTransitioning = false;
+        this.props.onNavigate(action);
+      });
+    } else {
+      this.props.onNavigate(action);
     }
 
-    this.props.onNavigate(action);
   }
 
   getNavigationHandler() {

@@ -18,6 +18,7 @@ const {
   Reducer: NavigationReducer,
 } = NavigationExperimental;
 
+import ExIcon from 'ExIcon';
 import ExText from 'ExText';
 import WithFreightSansFont from 'WithFreightSansFont';
 
@@ -49,7 +50,9 @@ class ExNavigationHeader extends React.Component {
     }
     return (
       <TouchableOpacity style={styles.backButton} onPress={this._handleBackPress}>
-        <Text>&lt;</Text>
+        <ExIcon
+          imageName="carat"
+          style={styles.backButtonImage} />
       </TouchableOpacity>
     );
   }
@@ -64,15 +67,7 @@ class ExNavigationHeader extends React.Component {
           {
             opacity: this.props.position.interpolate({
               inputRange: [index - 1, index, index + 1],
-              outputRange: [0, 1, 0],
-            }),
-            left: this.props.position.interpolate({
-              inputRange: [index - 1, index + 1],
-              outputRange: [200, -200],
-            }),
-            right: this.props.position.interpolate({
-              inputRange: [index - 1, index + 1],
-              outputRange: [-200, 200],
+              outputRange: [0.0, 1.0, 0.0],
             }),
           },
         ]}>
@@ -114,13 +109,14 @@ const styles = StyleSheet.create({
     width: 29,
     height: 37,
     position: 'absolute',
-    bottom: 4,
+    bottom: 10,
     left: 2,
     padding: 8,
   },
   backButtonImage: {
     width: 13,
     height: 21,
+    transform: [{rotate: '180deg'}],
   },
 });
 

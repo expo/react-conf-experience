@@ -10,12 +10,12 @@ import React, {
 } from 'react-native';
 
 const {
-  AnimatedView: NavigationAnimatedView,
-  Card: NavigationCard,
   Container: NavigationContainer,
   View: NavigationView,
 } = NavigationExperimental;
 
+import ExNavigationAnimatedView from 'ExNavigationAnimatedView';
+import ExNavigationCard from 'ExNavigationCard';
 import ExNavigationHeader from 'ExNavigationHeader';
 import ExTabItem from 'ExTabItem';
 import ExTabBar from 'ExTabBar';
@@ -52,7 +52,7 @@ class ExTabNavigator extends React.Component {
        * scenes in this substack to be animated, so we use AnimatedView
        * along with NavigationHeader and NavigationCard */ }
     return (
-      <NavigationAnimatedView
+      <ExNavigationAnimatedView
         style={{flex: 1, marginTop: 25}}
         key={tabIndex}
         navigationState={tabState}
@@ -62,13 +62,13 @@ class ExTabNavigator extends React.Component {
               navigationState={tabState}
               position={position}
               layout={layout}
-              getTitle={state => tabState.children[0].title}
+              getTitle={state => tabState.children[tabState.index].title}
             />
           );
         }}
         renderScene={(child, index, position, layout) => {
           return (
-            <NavigationCard
+            <ExNavigationCard
               key={child.key}
               index={index}
               childState={child}
@@ -76,7 +76,7 @@ class ExTabNavigator extends React.Component {
               position={position}
               layout={layout}>
               {this.props.renderScene(child, index)}
-            </NavigationCard>
+            </ExNavigationCard>
           );
         }}
       />

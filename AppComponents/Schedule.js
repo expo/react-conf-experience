@@ -141,7 +141,7 @@ class EventPreview extends React.Component {
       return (
         <TouchableHighlight
           onPress={() => {
-            this.props.onNavigate(PushAction({type: 'ActivityInfo', event: this.props.event}))
+            this.props.onNavigate(PushAction({type: 'ActivityInfo', event: this.props.event, title: 'Activity Info!'}))
           }}>
           <View style={styles.eventPreviewContainer}>
             <View style={styles.eventPreviewLeftColumn}>

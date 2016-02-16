@@ -83,6 +83,7 @@ class App extends React.Component {
     return (
       <ExTabNavigator.Item
         title={key}
+        titleStyle={{paddingBottom: 3}}
         renderIcon={() => <TabIcon tab={key} />}
         renderSelectedIcon={() => <TabIcon tab={key} selected />}
         selectedTitleStyle={{color: Colors.tint}}

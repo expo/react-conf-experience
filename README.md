@@ -1,5 +1,9 @@
 # The React Conf Experience
-The official mobile app for React Conf 2016.
+A mobile app for React Conf 2016.
+
+In this repo we experiment with NavigationExperimental and use Relay for
+all data fetching and such. We hope it will serve as an interesting
+example for people who are interested in either.
 
 ## Project
 

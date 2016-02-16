@@ -23,36 +23,6 @@ import Layout from 'Layout';
 import Schedule from 'Schedule';
 import ExTabNavigator from 'ExTabNavigator';
 
-class TabIcon extends React.Component {
-  render() {
-    let imageName, style;
-    let { tab, selected } = this.props;
-
-    if (tab === 'Schedule') {
-      imageName = 'ScheduleIcon';
-      style = { width: 25, height: 28, marginBottom: -1 }
-    } else if (tab === 'People') {
-      imageName = 'PeopleIcon';
-      style = { width: 45, height: 24, marginTop: -1 }
-    } else if (tab === 'Event Info') {
-      imageName = 'EventInfoIcon';
-      style = { width: 20, height: 28, marginBottom: -1 }
-    } else {
-      imageName = 'MeIcon';
-      style = { width: 35, height: 25 }
-    }
-
-    style.tintColor = selected ? Colors.tint : '#fff';
-
-    return (
-      <ExIcon
-        imageName={imageName}
-        style={style}
-      />
-    );
-  }
-}
-
 class App extends React.Component {
 
   render() {
@@ -110,6 +80,37 @@ class App extends React.Component {
     }
   }
 }
+
+class TabIcon extends React.Component {
+  render() {
+    let imageName, style;
+    let { tab, selected } = this.props;
+
+    if (tab === 'Schedule') {
+      imageName = 'ScheduleIcon';
+      style = { width: 25, height: 28, marginBottom: -1 }
+    } else if (tab === 'People') {
+      imageName = 'PeopleIcon';
+      style = { width: 45, height: 24, marginTop: -1 }
+    } else if (tab === 'Event Info') {
+      imageName = 'EventInfoIcon';
+      style = { width: 20, height: 28, marginBottom: -1 }
+    } else {
+      imageName = 'MeIcon';
+      style = { width: 35, height: 25 }
+    }
+
+    style.tintColor = selected ? Colors.tint : '#fff';
+
+    return (
+      <ExIcon
+        imageName={imageName}
+        style={style}
+      />
+    );
+  }
+}
+
 
 const styles = StyleSheet.create({
   headerContainer: {

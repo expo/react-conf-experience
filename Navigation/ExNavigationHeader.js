@@ -49,7 +49,7 @@ class ExNavigationHeader extends React.Component {
     }
     return (
       <TouchableOpacity style={styles.backButton} onPress={this._handleBackPress}>
-        <Text>&gt;</Text>
+        <Text>&lt;</Text>
       </TouchableOpacity>
     );
   }

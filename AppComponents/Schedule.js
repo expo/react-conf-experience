@@ -5,12 +5,23 @@
 import React, {
   Image,
   ListView,
+  NavigationExperimental,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableHighlight,
   View,
 } from 'react-native';
 import Immutable from 'immutable';
+
+const {
+  Container: NavigationContainer,
+  Reducer: NavigationReducer,
+} = NavigationExperimental;
+
+const {
+  PushAction,
+} = NavigationReducer.StackReducer;
 
 import Colors from 'Colors';
 import ExIcon from 'ExIcon';
@@ -123,31 +134,37 @@ class EventPreview extends React.Component {
     let { event } = this.props;
     let isSpecial = !event.get('speaker');
 
+
     if (isSpecial) {
       return this._renderSpecial();
     } else {
       return (
-        <View style={styles.eventPreviewContainer}>
-          <View style={styles.eventPreviewLeftColumn}>
-            <ExText style={styles.titleDetailsText}>
-              {get12HourTime(event.get('time'))} - {event.get('speaker')}
-            </ExText>
+        <TouchableHighlight
+          onPress={() => {
+            this.props.onNavigate(PushAction({type: 'ActivityInfo', event: this.props.event}))
+          }}>
+          <View style={styles.eventPreviewContainer}>
+            <View style={styles.eventPreviewLeftColumn}>
+              <ExText style={styles.titleDetailsText}>
+                {get12HourTime(event.get('time'))} - {event.get('speaker')}
+              </ExText>
 
-            <ExText style={styles.titleText}>
-              {event.get('title')}
-            </ExText>
+              <ExText style={styles.titleText}>
+                {event.get('title')}
+              </ExText>
+            </View>
+            <View style={styles.eventPreviewRightColumn}>
+              <Image
+                style={styles.speakerPhoto}
+                source={{uri: event.get('speakerPhotoUri')}} />
+            </View>
+            <View style={styles.eventPreviewCaratColumn}>
+              <ExIcon
+                imageName="carat"
+                style={styles.eventPreviewCarat} />
+            </View>
           </View>
-          <View style={styles.eventPreviewRightColumn}>
-            <Image
-              style={styles.speakerPhoto}
-              source={{uri: event.get('speakerPhotoUri')}} />
-          </View>
-          <View style={styles.eventPreviewCaratColumn}>
-            <ExIcon
-              imageName="carat"
-              style={styles.eventPreviewCarat} />
-          </View>
-        </View>
+        </TouchableHighlight>
       );
     }
   }
@@ -166,6 +183,8 @@ class EventPreview extends React.Component {
     );
   }
 }
+
+EventPreview = NavigationContainer.create(EventPreview);
 
 function get12HourTime(date) {
   let hours = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();

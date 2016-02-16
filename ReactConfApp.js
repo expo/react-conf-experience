@@ -30,13 +30,13 @@ class TabIcon extends React.Component {
 
     if (tab === 'Schedule') {
       imageName = 'ScheduleIcon';
-      style = { width: 25, height: 28 }
+      style = { width: 25, height: 28, marginBottom: -1 }
     } else if (tab === 'People') {
       imageName = 'PeopleIcon';
-      style = { width: 45, height: 24 }
+      style = { width: 45, height: 24, marginTop: -1 }
     } else if (tab === 'Event Info') {
       imageName = 'EventInfoIcon';
-      style = { width: 20, height: 28 }
+      style = { width: 20, height: 28, marginBottom: -1 }
     } else {
       imageName = 'MeIcon';
       style = { width: 35, height: 25 }
@@ -92,26 +92,22 @@ class App extends React.Component {
     );
   }
 
-  _renderTabScene(tabState, index) {
-    if (tabState.type === 'SchedulePage') {
+  _renderTabScene(route, index) {
+    if (route.type === 'SchedulePage') {
       return <Schedule />;
+    } else if (route.type === 'ActivityInfo') {
+      return (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <Text>Info goes here!!!!!</Text>
+        </View>
+      );
     } else {
       return (
-        <View style={{flex: 1}}>
-          <Text>{tabState.type}</Text>
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <Text>{route.title || route.type}</Text>
         </View>
       );
     }
-  }
-
-  _renderHeader() {
-    return (
-      <View style={styles.headerContainer}>
-        <ExText style={{fontSize: 20}}>
-          Schedule
-        </ExText>
-      </View>
-    );
   }
 }
 

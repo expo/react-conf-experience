@@ -1,0 +1,12 @@
+{
+  "passPerPreset": true,
+  "presets": [
+    { "plugins": "../Schema/babelRelayPlugin.js" },
+    "react-native",
+  ],
+  "plugins": [
+    "transform-export-extensions",
+    "transform-decorators-legacy",
+    "transform-react-constant-elements"
+  ]
+}

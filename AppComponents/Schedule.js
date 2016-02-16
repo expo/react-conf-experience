@@ -23,10 +23,16 @@ const {
   PushAction,
 } = NavigationReducer.StackReducer;
 
+import {
+  AsRelayContainer,
+  AsRelayRenderer,
+  Relay,
+} from 'AppRelay';
 import Colors from 'Colors';
 import ExIcon from 'ExIcon';
 import ExText from 'ExText';
 import Layout from 'Layout';
+import ViewerQuery from 'ViewerQuery';
 import WithFreightSansFont from 'WithFreightSansFont';
 
 const Events = Immutable.fromJS([
@@ -65,7 +71,18 @@ function dayOfWeekAsString(dayNumber) {
   return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][dayNumber - 1];
 }
 
-export default class Schedule extends React.Component {
+class Schedule extends React.Component {
+
+  static relay = {
+    queries: { ...ViewerQuery.queries },
+    fragments: {
+      viewer: () => Relay.QL`
+        fragment on Viewer {
+          id
+        }
+      `,
+    },
+  };
 
   constructor(props) {
     super(props);
@@ -74,7 +91,6 @@ export default class Schedule extends React.Component {
       rowHasChanged: (r1, r2) => r1 !== r2,
       sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
     });
-
 
     this.state = {
       dataSource,
@@ -105,7 +121,7 @@ export default class Schedule extends React.Component {
 
   _renderRow(event) {
     return (
-      <EventPreview event={event} />
+      <EventPreview event={event} viewer={null} />
     );
   }
 
@@ -128,12 +144,23 @@ export default class Schedule extends React.Component {
   }
 }
 
+export default AsRelayRenderer(Schedule);
+
 class EventPreview extends React.Component {
+
+  static relay = {
+    fragments: {
+      viewer: () => Relay.QL`
+        fragment on Viewer {
+          id
+        }
+      `,
+    },
+  };
 
   render() {
     let { event } = this.props;
     let isSpecial = !event.get('speaker');
-
 
     if (isSpecial) {
       return this._renderSpecial();
@@ -184,7 +211,9 @@ class EventPreview extends React.Component {
   }
 }
 
-EventPreview = NavigationContainer.create(EventPreview);
+EventPreview = NavigationContainer.create(
+  AsRelayContainer(EventPreview)
+);
 
 function get12HourTime(date) {
   let hours = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();

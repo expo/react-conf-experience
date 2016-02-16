@@ -4,6 +4,7 @@
 
 import React, {
   AppRegistry,
+  InteractionManager,
   NavigationExperimental,
   StyleSheet,
   Text,
@@ -15,6 +16,11 @@ const {
   RootContainer: NavigationRootContainer,
 } = NavigationExperimental;
 
+import {
+  Relay,
+  AppRelayNetworkLayer,
+} from 'AppRelay';
+
 import Colors from 'Colors';
 import ExNavigationReducer from 'ExNavigationReducer';
 import ExIcon from 'ExIcon';
@@ -24,6 +30,19 @@ import Schedule from 'Schedule';
 import ExTabNavigator from 'ExTabNavigator';
 
 class App extends React.Component {
+  constructor(...args) {
+    super(...args);
+    process.env.ENDPOINT = 'http://14a5e704.ngrok.com';
+
+    Relay.injectTaskScheduler(InteractionManager.runAfterInteractions);
+
+    // Default network layer
+    Relay.injectNetworkLayer(
+      new AppRelayNetworkLayer(`${process.env.ENDPOINT}/graphql`, {
+        fetchTimeout: 10000,
+      })
+    );
+  }
 
   render() {
     return (

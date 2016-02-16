@@ -79,6 +79,16 @@ class Schedule extends React.Component {
       viewer: () => Relay.QL`
         fragment on Viewer {
           id
+          days: schedule {
+            date
+            slots(first: 1000) {
+              edges {
+                node {
+                  ${SlotPreview.getFragment('slot')}
+                }
+              }
+            }
+          }
         }
       `,
     },
@@ -97,16 +107,26 @@ class Schedule extends React.Component {
     };
   }
 
-  render() {
-    let eventsByDay = Events.sortBy(event => event.get('time')).reduce((result, event) => {
-      let dayOfWeek = dayOfWeekAsString(event.get('time').getDay());
+  _computeSlotsByDay() {
+    const { days } = this.props.viewer;
+
+    return days.reduce((result, day) => {
+      let dayOfWeek = dayOfWeekAsString(new Date(day.date).getDay());
       result[dayOfWeek] = result[dayOfWeek] || [];
-      result[dayOfWeek].push(event);
+      result[dayOfWeek].push(...day.slots.edges.map(e => e.node));
       return result;
     }, {});
+  }
 
-    let dataSource = this.state.dataSource.
-      cloneWithRowsAndSections(eventsByDay, Object.keys(eventsByDay));
+  render() {
+    if (this.props.relayLoading || !this.props.viewer) {
+      return <View />;
+    }
+
+    let slotsByDay = this._computeSlotsByDay();
+
+    let dataSource = this.state.dataSource
+      .cloneWithRowsAndSections(slotsByDay, Object.keys(slotsByDay));
 
     return (
       <ListView
@@ -119,9 +139,9 @@ class Schedule extends React.Component {
     );
   }
 
-  _renderRow(event) {
+  _renderRow(slot) {
     return (
-      <EventPreview event={event} viewer={null} />
+      <SlotPreview slot={slot} onNavigate={this.props.onNavigate} />
     );
   }
 
@@ -146,21 +166,46 @@ class Schedule extends React.Component {
 
 export default AsRelayRenderer(Schedule);
 
-class EventPreview extends React.Component {
+const startTimeEndTimeFragment = Relay.QL`
+  fragment on ScheduleSlotInterface {
+    startTime
+    endTime
+  }
+`;
+
+class SlotPreview extends React.Component {
 
   static relay = {
     fragments: {
-      viewer: () => Relay.QL`
-        fragment on Viewer {
-          id
+      slot: () => Relay.QL`
+        fragment on ScheduleSlot {
+          __typename
+          ${startTimeEndTimeFragment}
+          ...on ActivitySlot {
+            title
+          }
+          ...on TalkSlot {
+            talk{
+              title
+              speaker {
+                name
+                avatarUrl
+              }
+            }
+          }
+          ...on LightningTalksSlot {
+            id
+          }
         }
       `,
     },
   };
 
   render() {
-    let { event } = this.props;
-    let isSpecial = !event.get('speaker');
+    let { slot } = this.props;
+    console.log(slot);
+    let isSpecial = slot.__typename !== 'TalkSlot';
+    console.log(slot, isSpecial);
 
     if (isSpecial) {
       return this._renderSpecial();
@@ -168,27 +213,27 @@ class EventPreview extends React.Component {
       return (
         <TouchableHighlight
           onPress={() => {
-            this.props.onNavigate(PushAction({type: 'ActivityInfo', event: this.props.event, title: 'Activity Info!'}))
+            this.props.onNavigate(PushAction({type: 'ActivityInfo', event: this.props.slot, title: 'Activity Info!'}))
           }}>
-          <View style={styles.eventPreviewContainer}>
-            <View style={styles.eventPreviewLeftColumn}>
+          <View style={styles.SlotPreviewContainer}>
+            <View style={styles.SlotPreviewLeftColumn}>
               <ExText style={styles.titleDetailsText}>
-                {get12HourTime(event.get('time'))} - {event.get('speaker')}
+                {get12HourTime(new Date(slot.startTime))} - {slot.talk.speaker.name}
               </ExText>
 
               <ExText style={styles.titleText}>
-                {event.get('title')}
+                {slot.talk.title}
               </ExText>
             </View>
-            <View style={styles.eventPreviewRightColumn}>
+            <View style={styles.SlotPreviewRightColumn}>
               <Image
                 style={styles.speakerPhoto}
-                source={{uri: event.get('speakerPhotoUri')}} />
+                source={{uri: slot.talk.speaker.avatarUrl }} />
             </View>
-            <View style={styles.eventPreviewCaratColumn}>
+            <View style={styles.SlotPreviewCaratColumn}>
               <ExIcon
                 imageName="carat"
-                style={styles.eventPreviewCarat} />
+                style={styles.SlotPreviewCarat} />
             </View>
           </View>
         </TouchableHighlight>
@@ -197,13 +242,13 @@ class EventPreview extends React.Component {
   }
 
   _renderSpecial() {
-    let { event } = this.props;
+    let { slot } = this.props;
 
     return (
-      <View style={styles.eventPreviewContainer}>
-        <View style={styles.eventPreviewLeftColumn}>
+      <View style={styles.SlotPreviewContainer}>
+        <View style={styles.SlotPreviewLeftColumn}>
           <ExText style={styles.titleDetailsText}>
-            {get12HourTime(event.get('time'))} - {event.get('title')}
+            {get12HourTime(new Date(slot.startTime))} - {slot.title}
           </ExText>
         </View>
       </View>
@@ -211,9 +256,7 @@ class EventPreview extends React.Component {
   }
 }
 
-EventPreview = NavigationContainer.create(
-  AsRelayContainer(EventPreview)
-);
+SlotPreview = AsRelayContainer(SlotPreview);
 
 function get12HourTime(date) {
   let hours = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
@@ -255,26 +298,26 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  eventPreviewContainer: {
+  SlotPreviewContainer: {
     flexDirection: 'row',
     backgroundColor: Colors.backgroundWhite,
     padding: 15,
   },
-  eventPreviewLeftColumn: {
+  SlotPreviewLeftColumn: {
     flex: 1,
     paddingRight: 40,
   },
-  eventPreviewRightColumn: {
+  SlotPreviewRightColumn: {
     width: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  eventPreviewCaratColumn: {
+  SlotPreviewCaratColumn: {
     width: 20,
     paddingTop: 15,
     justifyContent: 'center',
   },
-  eventPreviewCarat: {
+  SlotPreviewCarat: {
     alignSelf: 'center',
     width: 8,
     height: 13,

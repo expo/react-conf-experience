@@ -115,18 +115,20 @@ class NavigationAnimatedView extends React.Component {
   }
   componentDidUpdate(lastProps) {
     if (lastProps.navigationState.index !== this.props.navigationState.index) {
-      if (!this._isTransitioning) {
-        Animated.spring(this.state.position, {
-          toValue: this.props.navigationState.index,
-          bounciness: 0,
-          speed: 15,
-          overshootClamping: true,
-        }).start(({finished}) => {
-          if (finished) {
-            this._isTransitioning = false;
-          }
-        });
-      }
+      this._isTransitioning = true;
+
+      Animated.spring(this.state.position, {
+        toValue: this.props.navigationState.index,
+        bounciness: 0,
+        speed: 15,
+        restDisplacementThreshold: 0.1,
+        restSpeedThreshold: 0.1,
+        overshootClamping: true,
+      }).start(({finished}) => {
+        if (finished) {
+          this._isTransitioning = false;
+        }
+      });
     }
   }
 
@@ -146,13 +148,17 @@ class NavigationAnimatedView extends React.Component {
         bounciness: 0,
         speed: 15,
         velocity: -action.velocity.cx,
+        restDisplacementThreshold: 0.05,
+        restSpeedThreshold: 0.05,
         overshootClamping: true,
       }).start(() => {
         this._isTransitioning = false;
         this.props.onNavigate(action);
       });
     } else {
-      this.props.onNavigate(action);
+      if (!this._isTransitioning) {
+        this.props.onNavigate(action);
+      }
     }
 
   }

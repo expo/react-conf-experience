@@ -12,7 +12,8 @@ export default {
 
   backgroundWhite: '#fff',
   backgroundGray: '#f3f5f5',
-  separator: '#d2d2d2',
+  lighterSeparator: '#f5f5f5',
+  separator: '#eaeaea',
   darkerSeparator: '#E5E5E5',
 
   slightlyFaded: '#3C4243',

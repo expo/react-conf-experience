@@ -203,7 +203,7 @@ class SlotPreview extends React.Component {
             title
           }
           ...on TalkSlot {
-            talk{
+            talk {
               title
               speaker {
                 name
@@ -213,6 +213,13 @@ class SlotPreview extends React.Component {
           }
           ...on LightningTalksSlot {
             id
+            talks {
+              title
+              speaker {
+                name
+                avatarUrl
+              }
+            }
           }
         }
       `,
@@ -221,50 +228,123 @@ class SlotPreview extends React.Component {
 
   render() {
     let { slot } = this.props;
-    console.log(slot);
     let isSpecial = slot.__typename !== 'TalkSlot';
-    console.log(slot, isSpecial);
 
-    if (isSpecial) {
-      return this._renderSpecial();
+    if (slot.__typename === 'TalkSlot') {
+      return this._renderFullTalk();
+    } else if (slot.__typename === 'LightningTalksSlot') {
+      return this._renderLightningTalk();
     } else {
-      return (
-        <TouchableHighlight
-          onPress={() => {
-            this.props.onNavigate(PushAction({type: 'ActivityInfo', event: this.props.slot, title: 'Activity Info!'}))
-          }}>
-          <View style={styles.SlotPreviewContainer}>
-            <View style={styles.SlotPreviewLeftColumn}>
+      return this._renderSpecial();
+    }
+  }
+
+  _renderFullTalk() {
+    let { slot } = this.props;
+
+    return (
+      <TouchableHighlight
+        underlayColor={Colors.separator}
+        onPress={() => {
+          this.props.onNavigate(PushAction({
+            type: 'ActivityInfo', slot, title: 'Activity Info!'
+          }))
+        }}>
+        <View style={styles.slotPreviewContainer}>
+          <View style={styles.slotPreviewImageColumn}>
+            <Image
+              style={styles.speakerPhoto}
+              source={{uri: slot.talk.speaker.avatarUrl }} />
+          </View>
+
+          <View style={styles.slotPreviewDescriptionColumn}>
+            <ExText style={styles.titleDetailsText}>
+              {get12HourTime(new Date(slot.startTime))}
+            </ExText>
+
+            <ExText style={styles.titleText}>
+              {slot.talk.title}
+            </ExText>
+
+            <ExText style={styles.titleDetailsText}>
+              {slot.talk.speaker.name}
+            </ExText>
+          </View>
+
+          <View style={styles.slotPreviewCaratColumn}>
+            <ExIcon
+              imageName="carat"
+              style={styles.slotPreviewCarat} />
+          </View>
+        </View>
+      </TouchableHighlight>
+    );
+  }
+
+  _renderLightningTalk() {
+    let { slot } = this.props;
+
+    return (
+      <TouchableHighlight
+        underlayColor={Colors.separator}
+        onPress={() => {
+          this.props.onNavigate(PushAction({
+            type: 'ActivityInfo', slot, title: 'Activity Info!'
+          }))
+        }}>
+        <View style={[styles.slotPreviewContainer, {flexDirection: 'column'}]}>
+          <View style={{flex: 1, flexDirection: 'row', paddingBottom: 10}}>
+            <View style={styles.slotPreviewImageColumn}>
+              <ExIcon
+                style={{width: 40, height: 35, borderRadius: 1, marginTop: 1}}
+                imageName="lightning-bubble" />
+            </View>
+
+            <View style={styles.slotPreviewDescriptionColumn}>
               <ExText style={styles.titleDetailsText}>
-                {get12HourTime(new Date(slot.startTime))} - {slot.talk.speaker.name}
+                {get12HourTime(new Date(slot.startTime))}
               </ExText>
 
               <ExText style={styles.titleText}>
-                {slot.talk.title}
+                Lightning talks
               </ExText>
             </View>
-            <View style={styles.SlotPreviewRightColumn}>
-              <Image
-                style={styles.speakerPhoto}
-                source={{uri: slot.talk.speaker.avatarUrl }} />
-            </View>
-            <View style={styles.SlotPreviewCaratColumn}>
+
+            <View style={styles.slotPreviewCaratColumn}>
               <ExIcon
                 imageName="carat"
-                style={styles.SlotPreviewCarat} />
+                style={styles.slotPreviewCarat} />
             </View>
           </View>
-        </TouchableHighlight>
-      );
-    }
+
+          {slot.talks.map(talk => {
+            return (
+              <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',}}>
+                <View style={styles.slotPreviewImageColumn}>
+                  <Image
+                    style={styles.speakerPhoto}
+                    source={{uri: talk.speaker.avatarUrl }} />
+                </View>
+
+                <View style={styles.slotPreviewDescriptionColumn}>
+                  <ExText style={styles.subtitleText}>
+                    {talk.title} by {talk.speaker.name}
+                  </ExText>
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      </TouchableHighlight>
+    );
   }
 
   _renderSpecial() {
     let { slot } = this.props;
 
     return (
-      <View style={styles.SlotPreviewContainer}>
-        <View style={styles.SlotPreviewLeftColumn}>
+      <View style={styles.slotPreviewContainer}>
+        <View style={styles.slotPreviewDescriptionColumn}>
           <ExText style={styles.titleDetailsText}>
             {get12HourTime(new Date(slot.startTime))} - {slot.title}
           </ExText>
@@ -295,47 +375,65 @@ const styles = StyleSheet.create({
   sectionHeaderText: {
     fontSize: 14,
   },
-
+  slotPreviewMultipleImagesColumn: {
+    flexDirection: 'row',
+    flex: 1,
+    paddingBottom: 10,
+    paddingRight: 30,
+  },
   speakerPhoto: {
     width: 40,
     height: 40,
     borderRadius: 20,
+    marginBottom: 3,
   },
-
   titleDetailsText: {
     color: Colors.slightlyFaded,
   },
-
   titleText: {
     fontSize: 18,
   },
-
+  subtitleText: {
+    fontSize: 16,
+    color: '#888',
+    paddingTop: 5,
+  },
   rowSeparator: {
     height: Layout.pixel,
     backgroundColor: Colors.separator,
     flex: 1,
   },
-
-  SlotPreviewContainer: {
+  slotPreviewContainer: {
     flexDirection: 'row',
     backgroundColor: Colors.backgroundWhite,
     padding: 15,
   },
-  SlotPreviewLeftColumn: {
+  slotPreviewLightningContainer: {
+    flexDirection: 'column',
+    backgroundColor: Colors.backgroundWhite,
+    padding: 15,
+  },
+  slotPreviewLightningInnerContainer: {
+    flexDirection: 'row',
+  },
+  slotPreviewDescriptionColumn: {
     flex: 1,
     paddingRight: 40,
   },
-  SlotPreviewRightColumn: {
+  slotPreviewImageColumn: {
     width: 50,
-    alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: 2,
   },
-  SlotPreviewCaratColumn: {
+  slotPreviewMultipleImagesColumn: {
+    flex: 1,
+  },
+  slotPreviewCaratColumn: {
     width: 20,
     paddingTop: 15,
     justifyContent: 'center',
   },
-  SlotPreviewCarat: {
+  slotPreviewCarat: {
     alignSelf: 'center',
     width: 8,
     height: 13,

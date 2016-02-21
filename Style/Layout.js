@@ -23,7 +23,7 @@ let Layout = {
   tabBarHeight: 49,
   navigationBarDisplacement: 0,
   marginHorizontal: isSmallDevice ? 10 : 15,
-  statusBarHeight: ExponentConstants.statusBarHeight,
+  statusBarHeight: 20, //ExponentConstants.statusBarHeight,
   window: windowDimensions,
 };
 
